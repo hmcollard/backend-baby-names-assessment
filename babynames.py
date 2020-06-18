@@ -44,8 +44,21 @@ def extract_names(filename):
     ['2006', 'Aaliyah 91', 'Aaron 57', 'Abagail 895', ...]
     """
     names = []
-    # +++your code here+++
-    return names
+    # name_dict = {}
+    year = re.compile(r'Popularity\sin\s(\d\d\d\d)')
+    name = re.compile(r'<td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>')
+    with open(filename, 'r') as f:
+        text = f.read()
+    year_matches = year.finditer(text)
+    name_matchs = name.finditer(text)
+    for match in year_matches:
+        names.append(match.group(1))
+    for match in name_matchs:
+        names.append(match.group(2) + ' ' + match.group(1))
+        names.append(match.group(3) + ' ' + match.group(1))
+        # name_dict.setdefault(match.group(2), match.group(1))
+        # name_dict.setdefault(match.group(3), match.group(1))
+    return sorted(names)
 
 
 def create_parser():
@@ -82,8 +95,15 @@ def main(args):
     # Use the create_summary flag to decide whether to print the list
     # or to write the list to a summary file (e.g. `baby1990.html.summary`).
 
-    # +++your code here+++
+    # extract_names(filename)
 
+    # if create_summary:
+    #     with open(f'{filename}.summary', 'w') as f:
+    #         f.write(extract_names(filename))
+    # else:
+    #     print(extract_names(filename))
 
-if __name__ == '__main__':
-    main(sys.argv[1:])
+    pass
+
+    if __name__ == '__main__':
+        main(sys.argv[1:])
