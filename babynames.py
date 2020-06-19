@@ -29,7 +29,10 @@ Suggested milestones for incremental development:
  - Get the names data into a dict and print it
  - Build the [year, 'name rank', ... ] list and print it
  - Fix main() to use the extracted_names list
+
 """
+
+__author__ = 'Haley Collard with help from Daniel'
 
 import sys
 import re
@@ -44,8 +47,21 @@ def extract_names(filename):
     ['2006', 'Aaliyah 91', 'Aaron 57', 'Abagail 895', ...]
     """
     names = []
-    # +++your code here+++
-    return names
+    name_dict = {}
+    with open(filename, 'r') as f:
+        text = f.read()
+    year = re.search(r'Popularity\sin\s(\d\d\d\d)', text)
+    name_ranks = re.findall(
+        r'<td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>', text)
+    names.append(year.group(1))
+    for name_rank in name_ranks:
+        rank, boy_name, girl_name = name_rank
+        name_dict.setdefault(boy_name, rank)
+        name_dict.setdefault(girl_name, rank)
+    for k, v in name_dict.items():
+        names.append(f'{k} {v}')
+
+    return sorted(names)
 
 
 def create_parser():
@@ -82,7 +98,14 @@ def main(args):
     # Use the create_summary flag to decide whether to print the list
     # or to write the list to a summary file (e.g. `baby1990.html.summary`).
 
-    # +++your code here+++
+    for filename in file_list:
+        current_file = extract_names(filename)
+        text = '\n'.join(current_file)
+        if create_summary:
+            with open(f'{filename}.summary', 'w') as f:
+                f.write(text)
+        else:
+            print(text)
 
 
 if __name__ == '__main__':
